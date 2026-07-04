@@ -19,21 +19,20 @@ def buscar_ipca():
     # 3. retornar response.json()
     return response.json()
 
-def buscar_ipca_por_periodo(serie):
-    dados = buscar_ipca()
-    for item in dados:
-        if item['serie'] == serie:
-            return item
+
+def extrair_ipca_mais_recente(dados):
+    serie_dict = dados[0]["resultados"][0]["series"][0]["serie"]
+    serie_items = list(serie_dict.items())
+    serie_Ano_Mes = serie_items[0][0]
+    serie_Ano = serie_Ano_Mes[0:4]
+    serie_Mes = serie_Ano_Mes[4:6]
+    serie_valor = serie_items[0][1]
+    return serie_Ano, serie_Mes, serie_valor
 
 def main():
     dados = buscar_ipca()
-    serie = dados[0]["resultados"][0]["series"][0]["serie"]
-    serie = list(serie.items())
-    serieAnoMes = serie[0][0]
-    serierAno = serieAnoMes[0:4]
-    serieMes = serieAnoMes[4:6]
-    serievalor = serie[0][1]
-    print(f"IPCA - {serierAno}/{serieMes}: {serievalor}%")
+    ano, mes, valor = extrair_ipca_mais_recente(dados)
+    print(f"IPCA - {ano}/{mes}: {valor}%")
 
 if __name__ == "__main__":
     main()
